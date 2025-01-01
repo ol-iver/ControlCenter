@@ -1,4 +1,13 @@
-FROM registry.gitlab.com/lightmeter/golang-builder-docker-image:latest AS builder
+FROM golang:1.21-alpine3.18 as builder
+
+RUN apk update && apk add git make gcc curl libc-dev python3 graphviz ragel npm rsync
+RUN npm install -g @vue/cli@v4.5.13
+RUN npm install -g @vue/cli-service-global@4.5.13
+RUN vue --version
+
+# fix building front-end as we are using very old (two years?) dependencies
+# See https://github.com/webpack/webpack/issues/14532
+ENV NODE_OPTIONS --openssl-legacy-provider
 
 RUN apk update && apk add ca-certificates
 
